@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>NexStay Hotel — Booking &amp; Reservation System</title>
+  <meta name="description" content="NexStay Hotel: Luxury hotel booking and reservation management." />
+  <meta name="theme-color" content="#f7b731" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* GLOBAL BACKGROUND FOR ALL PAGES is managed in style.css */
+
+    /* Overlay for better text readability */
+    #app-section::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.1);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Auth section overlay */
+    #auth-section {
+      position: relative;
+    }
+
+    #auth-section::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.1);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Auth left side styling with cozy hotel theme */
+    .auth-left {
+      background: rgba(10, 15, 30, 0.05) !important;
+      backdrop-filter: blur(2px);
+    }
+
+    .auth-brand-hero .hero-hotel-name {
+      font-size: 3.5rem;
+    }
+
+    .hero-hotel-name span {
+      color: var(--gold);
+    }
+
+    /* Room card image fix */
+    .room-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* 360 view controls */
+    .vr-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .vr-btn {
+      background: rgba(247, 183, 49, 0.2);
+      border: 1px solid rgba(247, 183, 49, 0.4);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+
+    .vr-btn:hover {
+      background: rgba(247, 183, 49, 0.4);
+      transform: scale(1.05);
+    }
+
+    .vr-indicator {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+  </style>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+
+<body>
+
+  <!-- ===================== PUBLIC LANDING PAGE ===================== -->
+  <div id="landing-section">
+
+    <!-- NAV -->
+    <nav class="land-nav">
+      <div class="land-nav-brand">
+        <i class='bx bxs-building-house'></i>
+        <span>NexStay <strong>Hotel</strong></span>
+      </div>
+      <div class="land-nav-actions">
+        <button class="land-btn-outline" onclick="showLandingAuth('login')">Sign In</button>
+        <button class="land-btn-gold" onclick="showLandingAuth('register')">Book Now →</button>
+      </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="land-hero">
+      <div class="land-hero-overlay"></div>
+      <div class="land-hero-content">
+        <div class="land-hero-badge"><i class='bx bxs-star'></i> Five-Star Experience</div>
+        <h1 class="land-hero-title">Welcome to<br /><span>NexStay Hotel</span></h1>
+        <p class="land-hero-sub">Where Luxury Meets Comfort — Your Dream Stay Awaits</p>
+        <div class="land-hero-stats">
+          <div class="land-stat">
+            <div class="land-stat-num" id="land-stat-rooms">4</div>
+            <div class="land-stat-label">Premium Rooms</div>
+          </div>
+          <div class="land-stat-div"></div>
+          <div class="land-stat">
+            <div class="land-stat-num">5★</div>
+            <div class="land-stat-label">Star Rating</div>
+          </div>
+          <div class="land-stat-div"></div>
+          <div class="land-stat">
+            <div class="land-stat-num">6</div>
+            <div class="land-stat-label">Max Guests/Room</div>
+          </div>
+        </div>
+        <div class="land-hero-cta">
+          <button class="land-btn-gold land-btn-big" onclick="showLandingAuth('register')"><i
+              class='bx bx-calendar-check'></i> Reserve Your Room</button>
+          <button class="land-btn-outline land-btn-big" onclick="scrollToRooms()"><i class='bx bx-bed'></i> Browse
+            Rooms</button>
+        </div>
+      </div>
+      <div class="land-hero-scroll" onclick="scrollToRooms()">
+        <span>Scroll to see rooms</span><i class='bx bx-chevron-down'></i>
+      </div>
+    </section>
+
+    <!-- FEATURES STRIP -->
+    <section class="land-features">
+      <div class="land-feature"><i class='bx bx-wifi'></i><span>Free WiFi</span></div>
+      <div class="land-feature"><i class='bx bx-restaurant'></i><span>Fine Dining</span></div>
+      <div class="land-feature"><i class='bx bxs-parking'></i><span>Free Parking</span></div>
+      <div class="land-feature"><i class='bx bx-support'></i><span>24/7 Concierge</span></div>
+      <div class="land-feature"><i class='bx bx-check-shield'></i><span>Safe & Secure</span></div>
+    </section>
+
+    <!-- ROOMS SHOWCASE -->
+    <section class="land-rooms" id="land-rooms-section">
+      <div class="land-section-header">
+        <div class="land-section-badge">OUR ROOMS</div>
+        <h2 class="land-section-title">Choose Your Perfect Room</h2>
+        <p class="land-section-sub">All rooms accommodate 1–6 guests · Best rates guaranteed</p>
+      </div>
+      <div class="land-rooms-grid" id="land-rooms-grid">
+        <!-- Filled by JS -->
+      </div>
+      <div class="land-rooms-cta">
+        <button class="land-btn-gold land-btn-big" onclick="showLandingAuth('register')">
+          <i class='bx bx-calendar-plus'></i> Create Account & Book
+        </button>
+        <button class="land-btn-outline land-btn-big" onclick="showLandingAuth('login')">
+          Already a guest? Sign In →
+        </button>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="land-footer">
+      <div class="land-footer-brand">
+        <i class='bx bxs-building-house'></i>
+        <span>NexStay Hotel</span>
+    </footer>
+  </div>
+
+  <!-- ===================== AUTH SECTION ===================== -->
+  <div id="auth-section" class="hidden">
+
+    <!-- LOGIN PAGE -->
+    <div id="page-login" class="auth-page active">
+      <div class="auth-left">
+        <div class="auth-brand-hero">
+          <div class="hero-logo"><i class='bx bxs-building-house'></i></div>
+          <h1 class="hero-hotel-name">NexStay<br /><span>Hotel</span></h1>
+          <p class="hero-tagline">Where Luxury Meets Comfort</p>
+          <div class="hero-features">
+            <div class="hero-feat"><span><i class='bx bxs-star'></i></span> Premium Rooms &amp; Suites</div>
+            <div class="hero-feat"><span><i class='bx bxs-star'></i></span> Easy Online Booking</div>
+            <div class="hero-feat"><span><i class='bx bxs-star'></i></span> World-Class Hospitality</div>
+          </div>
+        </div>
+      </div>
+      <div class="auth-right">
+        <div class="auth-card">
+          <div class="auth-card-icon"><i class='bx bxs-building-house'></i></div>
+          <h2 class="auth-title">Welcome Back</h2>
+          <p class="auth-sub">Sign in to book your dream room</p>
+          <div id="login-error" class="auth-error hidden"></div>
+
+
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="login-email" placeholder="you@email.com" />
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <div class="pw-wrap">
+              <input type="password" id="login-pw" placeholder="••••••••" />
+              <button class="pw-toggle" onclick="togglePw('login-pw',this)"><i class='bx bx-show'></i></button>
+            </div>
+          </div>
+          <button class="btn-primary full-w auth-btn" onclick="doLogin()">Sign In →</button>
+          <div class="auth-switch">Don't have an account? <a onclick="showAuth('register')">Create one</a></div>
+          <div class="auth-demo-hint">Demo: sofia@email.com / sofia123</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGISTER PAGE -->
+    <div id="page-register" class="auth-page">
+      <div class="auth-left">
+        <div class="auth-brand-hero">
+          <div class="hero-logo"><i class='bx bxs-building-house'></i></div>
+          <h1 class="hero-hotel-name">NexStay<br /><span>Hotel</span></h1>
+          <p class="hero-tagline">Your Dream Stay Awaits</p>
+          <div class="hero-features">
+            <div class="hero-feat"><span><i class='bx bxs-star'></i></span> Browse &amp; Book Rooms</div>
+            <div class="hero-feat"><span><i class='bx bxs-star'></i></span> View Your Reservations</div>
+            <div class="hero-feat"><span><i class='bx bxs-star'></i></span> Seamless Check-In Experience</div>
+          </div>
+        </div>
+      </div>
+      <div class="auth-right">
+        <div class="auth-card">
+          <div class="auth-card-icon"><i class='bx bx-sparkles'></i></div>
+          <h2 class="auth-title">Create Account</h2>
+          <p class="auth-sub">Sign up and start booking your stay</p>
+          <div id="reg-error" class="auth-error hidden"></div>
+          <div class="form-row">
+            <div class="form-group"><label>First Name</label><input type="text" id="reg-fname" placeholder="Sofia" />
+            </div>
+            <div class="form-group"><label>Last Name</label><input type="text" id="reg-lname" placeholder="Dafers" />
+            </div>
+          </div>
+          <div class="form-group"><label>Email Address</label><input type="email" id="reg-email"
+              placeholder="you@email.com" /></div>
+          <div class="form-group"><label>Phone Number</label><input type="tel" id="reg-phone"
+              placeholder="09XXXXXXXXX" /></div>
+          <div class="form-group"><label>Password</label>
+            <div class="pw-wrap"><input type="password" id="reg-pw" placeholder="Min. 6 characters" /><button
+                class="pw-toggle" onclick="togglePw('reg-pw',this)"><i class='bx bx-show'></i></button></div>
+          </div>
+          <div class="form-group"><label>Confirm Password</label><input type="password" id="reg-cpw"
+              placeholder="Re-enter password" /></div>
+          <button class="btn-primary full-w auth-btn" onclick="doRegister()">Create Account →</button>
+          <div class="auth-switch">Already have an account? <a onclick="showAuth('login')">Sign in</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== APP SECTION ===================== -->
+  <div id="app-section" class="hidden">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon"><i class='bx bxs-building-house'></i></div>
+        <div>
+          <div class="brand-name">NexStay</div>
+          <div class="brand-sub">Hotel</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-label">NAVIGATION</div>
+        <!-- ADMIN ONLY -->
+        <a class="nav-item admin-only" id="nav-dashboard" onclick="showPage('dashboard')"><span class="nav-icon"><i
+              class='bx bxs-dashboard'></i></span> Dashboard</a>
+        <!-- BOTH -->
+        <a class="nav-item" id="nav-browse" onclick="showPage('browse')"><span class="nav-icon"><i
+              class='bx bx-bed'></i></span> Browse Rooms</a>
+        <!-- USER ONLY -->
+        <a class="nav-item user-only" id="nav-newbooking" onclick="showPage('newbooking')"><span class="nav-icon"><i
+              class='bx bx-plus'></i></span> New Booking</a>
+        <!-- ADMIN ONLY -->
+        <a class="nav-item admin-only" id="nav-allbookings" onclick="showPage('allbookings')"><span class="nav-icon"><i
+              class='bx bx-list-ul'></i></span> All Bookings</a>
+        <!-- USER ONLY -->
+        <a class="nav-item user-only" id="nav-mybookings" onclick="showPage('mybookings')"><span class="nav-icon"><i
+              class='bx bx-receipt'></i></span> My Bookings</a>
+        <div class="nav-label" style="margin-top:1rem">ACCOUNT</div>
+        <a class="nav-item" id="nav-settings" onclick="showPage('settings')"><span class="nav-icon"><i
+              class='bx bx-cog'></i></span> Settings</a>
+        <a class="nav-item" onclick="doLogout()"><span class="nav-icon"><i class='bx bx-log-out'></i></span> Logout</a>
+      </nav>
+      <div class="sidebar-footer" id="sidebar-user-info">
+        <div class="footer-avatar" id="sidebar-avatar">?</div>
+        <div>
+          <div class="footer-name" id="sidebar-name">—</div>
+          <div class="footer-role" id="sidebar-role">—</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <div class="topbar-hotel"><i class='bx bxs-building-house'></i> <strong>NexStay Hotel</strong> <span
+            class="topbar-divider">|</span> <span id="topbar-page">Dashboard</span></div>
+        <div class="topbar-right">
+          <span class="topbar-user" onclick="showPage('settings')"><i class='bx bx-user'></i> <span
+              id="topbar-username">User</span></span>
+        </div>
+      </div>
+
+      <!-- ===== DASHBOARD ===== -->
+      <div id="page-dashboard" class="page">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Main Dashboard</h1>
+            <p class="page-sub">Overview of hotel operations — stats, booking calendar &amp; room management</p>
+          </div>
+
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card" style="--accent:#f7b731">
+            <div class="stat-icon"><i class='bx bx-wallet'></i></div>
+            <div class="stat-value" id="stat-revenue">₱0</div>
+            <div class="stat-label">Total Revenue</div>
+            <div class="stat-trend">↑ +12% this month</div>
+          </div>
+          <div class="stat-card" style="--accent:#00c9a7">
+            <div class="stat-icon"><i class='bx bx-check-circle'></i></div>
+            <div class="stat-value" id="stat-confirmed">0</div>
+            <div class="stat-label">Confirmed Bookings</div>
+            <div class="stat-trend">↑ Active reservations</div>
+          </div>
+          <div class="stat-card" style="--accent:#f7b731">
+            <div class="stat-icon"><i class='bx bx-bed'></i></div>
+            <div class="stat-value" id="stat-available">0</div>
+            <div class="stat-label">Available Rooms</div>
+            <div class="stat-trend" id="stat-available-sub">of 4 total rooms</div>
+          </div>
+          <div class="stat-card" style="--accent:#fd9644">
+            <div class="stat-icon"><i class='bx bx-time-five'></i></div>
+            <div class="stat-value" id="stat-pending">0</div>
+            <div class="stat-label">Pending Approval</div>
+            <div class="stat-trend">Requires review</div>
+          </div>
+        </div>
+        <!-- BOOKING CALENDAR + SIDE CARDS ROW -->
+        <div class="dashboard-grid">
+          <!-- BOOKING CALENDAR -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title"><i class='bx bx-calendar' style='color:var(--gold);margin-right:.4rem'></i>Booking
+                Calendar</h2>
+              <button class="btn-ghost" onclick="showPage('allbookings')">View All →</button>
+            </div>
+            <div class="cal-nav">
+              <button class="cal-nav-btn" onclick="calPrev()"><i class='bx bx-chevron-left'></i></button>
+              <span id="cal-month-label" class="cal-month-label">—</span>
+              <button class="cal-nav-btn" onclick="calNext()"><i class='bx bx-chevron-right'></i></button>
+            </div>
+            <div class="cal-grid" id="cal-grid"></div>
+            <div class="cal-legend">
+              <span class="cal-dot" style="background:var(--gold)"></span><span>Booked</span>
+              <span class="cal-dot" style="background:#00c9a7"></span><span>Check-In</span>
+              <span class="cal-dot" style="background:#fd9644"></span><span>Check-Out</span>
+              <span class="cal-dot" style="background:#a855f7"></span><span>Today</span>
+            </div>
+            <div id="cal-events-list" style="margin-top:.8rem"></div>
+          </div>
+          <!-- SIDE CARDS -->
+          <div class="side-cards">
+            <!-- PORTAL LINKS (admin only) -->
+            <div class="card admin-only" style="padding:1rem 1.25rem">
+              <h2 class="card-title" style="margin-bottom:.8rem"><i class='bx bx-link'
+                  style='color:var(--gold);margin-right:.4rem'></i>Portal Links</h2>
+              <div style="display:flex;flex-direction:column;gap:.5rem">
+                <a id="user-link-display" href="/" target="_blank" class="portal-link-btn portal-link-user"><i
+                    class='bx bx-user'></i> User / Guest Portal <i class='bx bx-link-external'
+                    style='font-size:.75rem'></i></a>
+              </div>
+            </div>
+            <!-- RECENT BOOKINGS -->
+            <div class="card">
+              <div class="card-header" style="margin-bottom:.8rem">
+                <h2 class="card-title"><i class='bx bx-list-ul' style='color:var(--gold);margin-right:.4rem'></i>Recent
+                  Bookings</h2>
+                <button class="btn-ghost" onclick="showPage('allbookings')">View All →</button>
+              </div>
+              <div id="dash-recent-bookings"></div>
+            </div>
+            <!-- ROOM STATUS -->
+            <div class="card">
+              <h2 class="card-title" style="margin-bottom:1rem">Room Status Summary</h2>
+              <div id="room-status-list"></div>
+            </div>
+            <!-- REVENUE BREAKDOWN (admin only) -->
+            <div class="card admin-only">
+              <h2 class="card-title" style="margin-bottom:1rem"><i class='bx bx-line-chart'
+                  style='color:var(--gold);margin-right:.4rem'></i>Revenue Breakdown</h2>
+              <div id="revenue-breakdown-list"></div>
+            </div>
+          </div>
+        </div>
+        <!-- DASHBOARD ROOM CARDS -->
+        <div class="dash-rooms-section">
+          <div class="dash-rooms-header">
+            <div>
+              <h2 class="card-title">All Rooms Overview</h2>
+              <p style="color:var(--text-muted);font-size:.82rem;margin-top:.2rem">Click any room to browse — all rooms
+                max 6 guests</p>
+            </div>
+            <button class="btn-ghost" onclick="showPage('browse')">View All Rooms →</button>
+          </div>
+          <div class="dash-rooms-grid" id="dash-rooms-grid"></div>
+        </div>
+      </div>
+
+      <!-- ===== BROWSE ROOMS ===== -->
+      <div id="page-browse" class="page">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Browse Hotel Rooms</h1>
+            <p class="page-sub">View, search, and filter all rooms — click a room &amp; full details
+            </p>
+          </div>
+
+        </div>
+        <div class="filter-bar">
+          <div class="search-wrap">
+            <span class="search-icon"><i class='bx bx-search'></i></span>
+            <input type="text" id="room-search" placeholder="Search rooms..." oninput="filterRooms()" />
+          </div>
+          <div class="filter-group"><label>Type</label>
+            <select id="filter-type" onchange="filterRooms()">
+              <option value="All">All Types</option>
+              <option value="Standard">Standard</option>
+              <option value="Deluxe">Deluxe</option>
+              <option value="Family">Family</option>
+              <option value="Suite">Suite</option>
+            </select>
+          </div>
+          <div class="filter-group"><label>Status</label>
+            <select id="filter-avail" onchange="filterRooms()">
+              <option value="All">All Status</option>
+              <option value="Available">Available</option>
+              <option value="Occupied">Occupied</option>
+              <option value="Maintenance">Maintenance</option>
+            </select>
+          </div>
+          <div class="filter-group guest-slider-group">
+            <label>Guests: <span id="guest-slider-val" class="slider-val-badge">Any</span></label>
+            <div class="slider-track-wrap">
+              <input type="range" id="filter-guests" min="0" max="6" value="0" step="1" oninput="filterRooms()"
+                class="guest-slider" />
+              <div class="slider-ticks">
+                <span>Any</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span>
+              </div>
+            </div>
+          </div>
+          <span class="filter-count" id="filter-count">Showing 9 of 9 rooms</span>
+        </div>
+        <div class="rooms-grid" id="rooms-grid"></div>
+      </div>
+
+      <!-- ===== NEW BOOKING ===== -->
+      <div id="page-newbooking" class="page">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">New Booking — Input Form</h1>
+            <p class="page-sub">Fill in guest details, select room, and pick check-in/out dates</p>
+          </div>
+
+        </div>
+        <div class="booking-form-grid">
+          <div class="card">
+            <div class="section-label">INPUT SECTION 1</div>
+            <h2 class="card-title" style="margin-bottom:1.2rem">Guest Information</h2>
+            <div class="form-group"><label>Full Name *</label><input type="text" id="f-name"
+                placeholder="e.g. Maria Santos" /></div>
+            <div class="form-group"><label>Email Address *</label><input type="email" id="f-email"
+                placeholder="guest@email.com" /></div>
+            <div class="form-group"><label>Phone Number *</label><input type="tel" id="f-phone"
+                placeholder="09XXXXXXXXX" /></div>
+            <div class="form-group"><label>Special Requests (Optional)</label><textarea id="f-notes" rows="3"
+                placeholder="e.g. Late check-in, extra pillows..."></textarea></div>
+          </div>
+          <div>
+            <div class="card" style="margin-bottom:1rem">
+              <div class="section-label">INPUT SECTION 2</div>
+              <h2 class="card-title" style="margin-bottom:1.2rem">Room &amp; Dates</h2>
+              <div class="form-group"><label>Select Room *</label>
+                <select id="f-room" onchange="updateSummary()">
+                  <option value="">-- Choose a room --</option>
+                  <!-- Options populated dynamically by syncBookingRoomSelect() -->
+                </select>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label>Check-In Date *</label><input type="date" id="f-checkin"
+                    onchange="updateSummary()" /></div>
+                <div class="form-group"><label>Check-Out Date *</label><input type="date" id="f-checkout"
+                    onchange="updateSummary()" /></div>
+              </div>
+            </div>
+            <div class="card summary-card">
+              <div class="section-label">COMPUTATION OUTPUT</div>
+              <h2 class="card-title" style="margin-bottom:1rem">Booking Summary</h2>
+              <div class="summary-row"><span>Room:</span><span id="sum-room">—</span></div>
+              <div class="summary-row"><span>Rate per Night:</span><span id="sum-rate">—</span></div>
+              <div class="summary-row"><span>Number of Nights:</span><span id="sum-nights">—</span></div>
+              <div class="summary-row total"><span>Total Amount:</span><span id="sum-total">—</span></div>
+              <div class="sum-formula">Total = Rate/Night × Number of Nights</div>
+            </div>
+            <div class="form-actions">
+              <button class="btn-outline" onclick="showPage('browse')">← Back to Rooms</button>
+              <button class="btn-primary" onclick="confirmBooking()"><i class='bx bx-check'></i> Confirm Booking
+                →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== CONFIRMATION ===== -->
+      <div id="page-confirmation" class="page">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Booking Confirmation — Result Page</h1>
+            <p class="page-sub">Displays booking summary after successful reservation</p>
+          </div>
+
+        </div>
+        <div class="confirm-wrap">
+          <div class="confirm-success">
+            <div class="confirm-icon"><i class='bx bx-check-circle'></i></div>
+            <div>
+              <div class="confirm-title">Booking Confirmed!</div>
+              <div class="confirm-sub">Your reservation has been successfully created.</div>
+            </div>
+          </div>
+          <div class="confirm-body">
+            <div class="confirm-ref-row">
+              <div>
+                <div class="confirm-ref-label">Booking Reference</div>
+                <div class="confirm-ref-id" id="conf-ref">—</div>
+              </div>
+              <span class="badge badge-confirmed">Confirmed</span>
+            </div>
+            <div class="confirm-details-grid">
+              <div>
+                <div class="detail-section-label">GUEST INFORMATION</div>
+                <div class="detail-row"><span>Name:</span><strong id="conf-name">—</strong></div>
+                <div class="detail-row"><span>Email:</span><strong id="conf-email">—</strong></div>
+                <div class="detail-row"><span>Phone:</span><strong id="conf-phone">—</strong></div>
+              </div>
+              <div>
+                <div class="detail-section-label">ROOM DETAILS</div>
+                <div class="detail-row"><span>Room:</span><strong id="conf-room">—</strong></div>
+                <div class="detail-row"><span>Type:</span><strong id="conf-type">—</strong></div>
+                <div class="detail-row"><span>Floor:</span><strong id="conf-floor">—</strong></div>
+                <div class="detail-row"><span>Capacity:</span><strong id="conf-cap">—</strong></div>
+              </div>
+            </div>
+            <div class="billing-box">
+              <div class="detail-section-label">STAY SUMMARY &amp; BILLING</div>
+              <div class="detail-row"><span>Check-In:</span><strong id="conf-checkin">—</strong></div>
+              <div class="detail-row"><span>Check-Out:</span><strong id="conf-checkout">—</strong></div>
+              <div class="detail-row"><span>Duration:</span><strong id="conf-nights">—</strong></div>
+              <div class="detail-row"><span>Rate per Night:</span><strong id="conf-rate">—</strong></div>
+              <div class="detail-row total"><span>Total Amount:</span><strong id="conf-total">—</strong></div>
+              <div class="sum-formula" id="conf-formula"></div>
+            </div>
+            <div class="confirm-footer-note" id="conf-footer-note"></div>
+          </div>
+          <div class="confirm-actions">
+            <button class="btn-outline" id="conf-view-bookings-btn"
+              onclick="isAdmin() ? showPage('allbookings') : showPage('mybookings')"><i class='bx bx-list-ul'></i> <span
+                id="conf-view-bookings-label">View My Bookings</span></button>
+            <button class="btn-primary" onclick="showPage('browse')"><i class='bx bx-bed'></i> Browse Rooms →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ALL BOOKINGS ===== -->
+      <div id="page-allbookings" class="page">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">All Bookings</h1>
+            <p class="page-sub">View and manage all hotel reservations</p>
+          </div>
+
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div style="display:flex;align-items:center;gap:.75rem">
+              <label style="font-weight:600;color:var(--text-muted);font-size:.85rem">Filter by:</label>
+              <select id="ab-filter" onchange="renderAllBookings()"
+                style="padding:.4rem .8rem;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--text);font-family:inherit">
+                <option value="All">All</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Pending">Pending</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Guest</th>
+                  <th>Room</th>
+                  <th>Check-In</th>
+                  <th>Check-Out</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="all-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== MY BOOKINGS (USER ONLY) ===== -->
+      <div id="page-mybookings" class="page">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">My Bookings</h1>
+            <p class="page-sub">Your personal reservation history</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="my-bookings-summary" id="my-bookings-summary"></div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Room</th>
+                  <th>Check-In</th>
+                  <th>Check-Out</th>
+                  <th>Nights</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Notes</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="my-tbody"></tbody>
+            </table>
+          </div>
+          <div id="my-empty" class="empty-state" style="display:none">
+            <i class='bx bx-calendar-x'></i>
+            <p>No bookings yet.</p>
+            <button class="btn-primary" onclick="showPage('browse')"><i class='bx bx-bed'></i> Browse Rooms</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SETTINGS / ACCOUNT ===== -->
+      <div id="page-settings" class="page">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Account Settings</h1>
+            <p class="page-sub">Manage your profile, password, and preferences</p>
+          </div>
+          <div class="header-badge">ACCOUNT · settings</div>
+        </div>
+        <div class="settings-grid">
+          <div class="card">
+            <div class="settings-avatar-row">
+              <div class="settings-avatar" id="set-avatar-display">?</div>
+              <div>
+                <div class="settings-avatar-name" id="set-avatar-name">—</div>
+                <div class="settings-avatar-role" id="set-avatar-role">—</div>
+                <div class="settings-avatar-email" id="set-avatar-email">—</div>
+              </div>
+            </div>
+            <h2 class="card-title" style="margin-bottom:1rem;margin-top:1.5rem">Profile Information</h2>
+            <div class="form-row">
+              <div class="form-group"><label>First Name</label><input type="text" id="set-fname" /></div>
+              <div class="form-group"><label>Last Name</label><input type="text" id="set-lname" /></div>
+            </div>
+            <div class="form-group"><label>Email Address</label><input type="email" id="set-email" /></div>
+            <div class="form-group"><label>Phone Number</label><input type="tel" id="set-phone" /></div>
+            <button class="btn-primary" onclick="saveProfile()"><i class='bx bx-save'></i> Save Profile</button>
+          </div>
+          <div>
+            <div class="card" style="margin-bottom:1rem">
+              <h2 class="card-title" style="margin-bottom:1rem">Change Password</h2>
+              <div class="form-group"><label>Current Password</label><input type="password" id="set-oldpw"
+                  placeholder="••••••••" /></div>
+              <div class="form-group"><label>New Password</label><input type="password" id="set-newpw"
+                  placeholder="Min. 6 characters" /></div>
+              <div class="form-group"><label>Confirm New Password</label><input type="password" id="set-cpw"
+                  placeholder="Re-enter new password" /></div>
+              <button class="btn-primary" onclick="changePassword()"><i class='bx bx-lock-alt'></i> Update
+                Password</button>
+            </div>
+            <div class="card">
+              <h2 class="card-title" style="margin-bottom:1rem">Preferences</h2>
+              <div class="pref-row">
+                <div>
+                  <div class="pref-label">Email Notifications</div>
+                  <div class="pref-sub">Get alerts for new bookings</div>
+                </div>
+                <label class="toggle"><input type="checkbox" id="pref-email" checked /><span
+                    class="toggle-slider"></span></label>
+              </div>
+              <div class="pref-row">
+                <div>
+                  <div class="pref-label">Dark Mode</div>
+                  <div class="pref-sub">Switch interface theme</div>
+                </div>
+                <label class="toggle"><input type="checkbox" id="pref-dark" checked
+                    onchange="toggleDarkMode(this)" /><span class="toggle-slider"></span></label>
+              </div>
+              <div class="pref-row">
+                <div>
+                  <div class="pref-label">Auto-confirm Bookings</div>
+                  <div class="pref-sub">Skip pending approval step</div>
+                </div>
+                <label class="toggle"><input type="checkbox" id="pref-auto" /><span
+                    class="toggle-slider"></span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ===== ROOM VIEW MODAL WITH 360° PANORAMIC VIEW ===== -->
+  <div id="room-modal" class="modal-overlay" onclick="closeModal(event)">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeRoomModal()"><i class='bx bx-x'></i></button>
+
+      <div class="modal-img-wrap">
+        <img id="modal-main-img" src="" alt="Room" style="cursor: zoom-in;" onclick="openLightbox()"
+          title="Click to enlarge image" />
+        <div class="modal-img-badge" id="modal-status-badge">Available</div>
+        <div class="modal-img-price" id="modal-price-badge">₱0/night</div>
+      </div>
+
+      <div class="modal-gallery" id="modal-gallery"></div>
+
+      <div class="modal-content">
+        <div class="modal-header-row">
+          <div>
+            <h2 class="modal-room-name" id="modal-name">Room 101</h2>
+            <div class="modal-room-meta" id="modal-meta">Standard · Floor 1 · 2 guests</div>
+          </div>
+          <div class="modal-rating" id="modal-rating"><i class='bx bxs-star'></i> 4.8</div>
+        </div>
+
+        <p class="modal-description" id="modal-desc"></p>
+
+
+
+        <!-- What's Inside Section -->
+        <div class="modal-section-title"><i class='bx bx-chair'></i> What's Inside This Room</div>
+        <div class="modal-inside-grid" id="modal-inside-grid"></div>
+
+        <!-- Amenity Tags -->
+        <div class="modal-section-title"><i class='bx bx-sparkles'></i> Amenities</div>
+        <div class="modal-amenities" id="modal-amenities"></div>
+
+        <!-- Room Details -->
+        <div class="modal-details-grid" id="modal-details"></div>
+
+        <!-- Reviews Section -->
+        <div class="modal-section-title" style="margin-top:1rem"><i class='bx bx-star'></i> Guest Reviews</div>
+        <div id="modal-reviews-list" style="margin-bottom:.5rem"></div>
+        <button id="modal-rate-btn" class="btn-outline user-only" onclick="openReviewModal()"
+          style="font-size:.82rem;padding:.4rem .9rem;display:none"><i class='bx bx-edit'></i> Write a Review</button>
+
+        <div class="modal-actions">
+          <button class="btn-outline" onclick="closeRoomModal()">← Back</button>
+          <button class="btn-primary" id="modal-book-btn" onclick="bookFromModal()">Book This Room →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ===== MANAGE ROOM MODAL (ADMIN) ===== -->
+  <div id="manage-room-modal" class="modal-overlay" onclick="closeManageRoomModal(event)"
+    style="display:none;z-index:3000">
+    <div class="modal-box" style="max-width:560px;max-height:90vh;overflow-y:auto">
+      <button class="modal-close" onclick="closeManageRoomModal()"><i class='bx bx-x'></i></button>
+      <div style="padding:1.5rem 0 0">
+        <div class="section-label" id="mr-mode-label">MANAGE ROOM</div>
+        <h2 class="card-title" id="manage-room-title" style="margin-bottom:1.5rem">Edit Room Details</h2>
+        <!-- ROOM PHOTOS -->
+        <div class="form-group">
+          <label style="display:flex;align-items:center;justify-content:space-between">
+            <span>Room Photos</span>
+            <label for="mr-photo-upload" class="btn-ghost" style="cursor:pointer;font-size:.8rem;color:var(--gold)"><i
+                class='bx bx-image-add'></i> Add Photo</label>
+          </label>
+          <input type="file" id="mr-photo-upload" accept="image/*" multiple style="display:none"
+            onchange="handleRoomPhotoUpload(this)" />
+          <div id="mr-photo-preview" class="mr-photo-grid"></div>
+        </div>
+        <!-- ROOM INFO -->
+        <div class="form-group">
+          <label>Room ID / Number</label>
+          <input type="text" id="mr-id" placeholder="e.g. 401" />
+        </div>
+        <div class="form-group">
+          <label>Room Name</label>
+          <input type="text" id="mr-name" placeholder="e.g. The Ocean Suite" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Room Type</label>
+            <select id="mr-type">
+              <option value="Standard">Standard</option>
+              <option value="Deluxe">Deluxe</option>
+              <option value="Suite">Suite</option>
+              <option value="Family">Family</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Floor</label>
+            <input type="text" id="mr-floor" placeholder="e.g. Floor 4" />
+          </div>
+        </div>
+        <!-- Status (Maintenance only toggle - hidden for add, shown only for edit) -->
+        <div class="form-group" id="mr-status-wrap" style="display:none">
+          <label>Room Status <span style="color:var(--text-muted);font-size:.78rem">(auto-managed by
+              bookings)</span></label>
+          <select id="mr-status">
+            <option value="Available">Available</option>
+            <option value="Occupied">Occupied</option>
+            <option value="Maintenance">Maintenance — Set manually</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Rate per Night (₱)</label>
+            <input type="number" id="mr-rate" placeholder="e.g. 2500" min="0" />
+          </div>
+          <div class="form-group">
+            <label>Capacity (guests)</label>
+            <input type="number" id="mr-cap" placeholder="e.g. 2" min="1" max="10" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="mr-desc" rows="3" placeholder="Room description..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Amenities <span style="color:var(--text-muted);font-size:.78rem">(comma-separated)</span></label>
+          <input type="text" id="mr-amenities" placeholder="WiFi, TV, AC, Mini-bar" />
+        </div>
+        <div class="form-group">
+          <label>What's Inside This Room <span style="color:var(--text-muted);font-size:.78rem">(one item per
+              line)</span></label>
+          <textarea id="mr-inside" rows="4"
+            placeholder="Queen Bed&#10;42&quot; Smart TV&#10;Rain Shower&#10;Coffee Maker"></textarea>
+        </div>
+        <div class="form-actions" style="margin-top:1.2rem">
+          <button class="btn-outline" onclick="closeManageRoomModal()">Cancel</button>
+          <button class="btn-primary" onclick="saveRoomChanges()"><i class='bx bx-save'></i> Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVIEW MODAL -->
+  <div id="review-modal" class="modal-overlay" onclick="closeReviewModal(event)" style="display:none;z-index:4000">
+    <div class="modal-box" style="max-width:440px">
+      <button class="modal-close" onclick="closeReviewModal()"><i class='bx bx-x'></i></button>
+      <div style="padding:1.5rem 0 0">
+        <div class="section-label">GUEST REVIEW</div>
+        <h2 class="card-title" style="margin-bottom:1rem" id="review-room-title">Rate this Room</h2>
+        <div class="form-group">
+          <label>Your Rating</label>
+          <div class="star-picker" id="star-picker">
+            <span class="star-pick" data-val="1" onclick="setReviewStar(1)">★</span>
+            <span class="star-pick" data-val="2" onclick="setReviewStar(2)">★</span>
+            <span class="star-pick" data-val="3" onclick="setReviewStar(3)">★</span>
+            <span class="star-pick" data-val="4" onclick="setReviewStar(4)">★</span>
+            <span class="star-pick" data-val="5" onclick="setReviewStar(5)">★</span>
+          </div>
+          <input type="hidden" id="review-rating" value="0" />
+        </div>
+        <div class="form-group">
+          <label>Your Comment</label>
+          <textarea id="review-comment" rows="4" placeholder="Tell us about your experience..."></textarea>
+        </div>
+        <div class="form-actions" style="margin-top:1rem">
+          <button class="btn-outline" onclick="closeReviewModal()">Cancel</button>
+          <button class="btn-primary" onclick="submitReview()"><i class='bx bx-send'></i> Submit Review</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast"></div>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox" onclick="closeLightbox()"
+    style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 10000; display: none; align-items: center; justify-content: center; cursor: zoom-out;">
+    <button
+      style="position: absolute; top: 20px; right: 20px; background: transparent; border: 1px solid rgba(255,255,255,0.5); color: white; border-radius: 50%; width: 40px; height: 40px; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"
+      onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'"><i
+        class='bx bx-x'></i></button>
+    <img id="lightbox-img" src=""
+      style="max-width: 90%; max-height: 90%; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

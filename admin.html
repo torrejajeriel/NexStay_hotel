@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>NexStay Hotel — Admin Portal</title>
+  <meta name="description" content="NexStay Hotel Admin Portal — Manage bookings, rooms, and hotel operations." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <style>
+    .admin-portal-hint {
+      background: transparent;
+      border: 1px solid rgb(236, 205, 34);
+      border-radius: 8px;
+      padding: .55rem .9rem;
+      font-size: .8rem;
+      color: black;
+      line-height: 1.4;
+      margin-bottom: .75rem;
+    }
+
+    .admin-portal-hint a {
+      color: goldenrod;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== ADMIN LOGIN ===== -->
+  <div id="admin-auth-section">
+    <div id="page-admin-login" class="auth-page active" style="min-height:100vh;display:flex">
+      <div class="auth-left">
+        <div class="auth-brand-hero">
+          <div class="hero-logo" style="background:transparent;border-color:transparent"><i class='bx bxs-user-badge'
+              style="color:#a855f7"></i></div>
+          <h1 class="hero-hotel-name">NexStay<br /><span style="color:transparent">Admin</span></h1>
+          <p class="hero-tagline">Management Portal — Authorized Personnel Only</p>
+          <div class="hero-features">
+            <div class="hero-feat"><span><i class='bx bxs-star' style="color:#a855f7"></i></span> Booking & Revenue
+              Control</div>
+            <div class="hero-feat"><span><i class='bx bxs-star' style="color:#e0d618"></i></span> Room Inventory
+              Management</div>
+            <div class="hero-feat"><span><i class='bx bxs-star' style="color:#e1cf11"></i></span> Guest Experience
+              Oversight</div>
+          </div>
+        </div>
+      </div>
+      <div class="auth-right">
+        <div class="auth-card">
+          <div class="auth-card-icon" style="background:rgba(168,85,247,.15);border-color:rgba(168,85,247,.3)"><i
+              class='bx bxs-user-badge' style="color:#a855f7"></i></div>
+          <h2 class="auth-title">Admin Sign In</h2>
+          <p class="auth-sub">Access the NexStay management dashboard</p>
+          <div id="admin-login-error" class="auth-error hidden"></div>
+
+          <div class="form-group">
+            <label>Admin Email</label>
+            <input type="email" id="admin-email" placeholder="admin@email.com" />
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="admin-pw" placeholder="••••••••"
+              onkeydown="if(event.key==='Enter') adminLogin()" />
+          </div>
+          <button class="btn-primary full-w" onclick="adminLogin()"
+            style="background:linear-gradient(135deg,#7c3aed,#a855f7)">
+            <i class='bx bx-log-in'></i> Sign In to Admin Portal
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ADMIN APP ===== -->
+  <div id="admin-app-section" class="hidden">
+    <div class="app-layout">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="sidebar-brand">
+          <i class='bx bxs-user-badge' style="color:#a855f7"></i>
+          <span>NexStay <strong>Admin</strong></span>
+        </div>
+        <nav class="sidebar-nav">
+          <div class="nav-label">MANAGEMENT</div>
+          <a class="nav-item" id="anav-dashboard" onclick="ashowPage('dashboard')"><span class="nav-icon"><i
+                class='bx bxs-dashboard'></i></span> Dashboard</a>
+          <a class="nav-item" id="anav-allbookings" onclick="ashowPage('allbookings')"><span class="nav-icon"><i
+                class='bx bx-list-ul'></i></span> All Bookings</a>
+          <a class="nav-item" id="anav-rooms" onclick="ashowPage('rooms')"><span class="nav-icon"><i
+                class='bx bx-bed'></i></span> Manage Rooms</a>
+          <div class="nav-label" style="margin-top:1rem">ACCOUNT</div>
+          <a class="nav-item" id="anav-settings" onclick="ashowPage('settings')"><span class="nav-icon"><i
+                class='bx bx-cog'></i></span> Settings</a>
+          <a class="nav-item" onclick="adminLogout()"><span class="nav-icon"><i class='bx bx-log-out'></i></span>
+            Logout</a>
+        </nav>
+        <div class="sidebar-footer" id="admin-sidebar-user">
+          <div class="footer-avatar" id="admin-avatar">A</div>
+          <div>
+            <div class="footer-name" id="admin-name">—</div>
+            <div class="footer-role" style="color:#e5da0a;font-size:.72rem">Administrator</div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="main-content">
+        <div class="topbar">
+          <div class="topbar-hotel"><i class='bx bxs-user-badge' style="color:#f0f81a"></i> <strong>NexStay
+              Admin</strong> <span class="topbar-divider">|</span> <span id="admin-topbar-page">Dashboard</span></div>
+          <div class="topbar-right">
+            <span class="topbar-user" onclick="ashowPage('settings')"><i class='bx bx-user'></i> <span
+                id="admin-topbar-name">Admin</span></span>
+          </div>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div id="apage-dashboard" class="page active">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Admin Dashboard</h1>
+              <p class="page-sub">Hotel operations overview — bookings, revenue, and room status</p>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card" style="--accent:#f7b731">
+              <div class="stat-icon"><i class='bx bx-wallet'></i></div>
+              <div class="stat-value" id="astat-revenue">₱0</div>
+              <div class="stat-label">Total Revenue</div>
+              <div class="stat-trend">↑ Confirmed bookings</div>
+            </div>
+            <div class="stat-card" style="--accent:#00c9a7">
+              <div class="stat-icon"><i class='bx bx-check-circle'></i></div>
+              <div class="stat-value" id="astat-confirmed">0</div>
+              <div class="stat-label">Confirmed Bookings</div>
+              <div class="stat-trend">↑ Active reservations</div>
+            </div>
+            <div class="stat-card" style="--accent:#f7b731">
+              <div class="stat-icon"><i class='bx bx-bed'></i></div>
+              <div class="stat-value" id="astat-available">0</div>
+              <div class="stat-label">Available Rooms</div>
+              <div class="stat-trend" id="astat-avail-sub">of 0 total rooms</div>
+            </div>
+            <div class="stat-card" style="--accent:#a855f7">
+              <div class="stat-icon"><i class='bx bx-link'></i></div>
+              <div class="stat-label" style="font-size:.82rem;margin-top:.3rem">Portal Links</div>
+              <a href="/" target="_blank" class="portal-link-btn portal-link-user"
+                style="margin-top:.3rem;font-size:.75rem">User / Guest Portal</a>
+            </div>
+          </div>
+          <div class="dashboard-grid">
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title"><i class='bx bx-calendar'
+                    style='color:var(--gold);margin-right:.4rem'></i>Booking Calendar</h2>
+                <button class="btn-ghost" onclick="ashowPage('allbookings')">View All →</button>
+              </div>
+              <div class="cal-nav">
+                <button class="cal-nav-btn" onclick="acalPrev()"><i class='bx bx-chevron-left'></i></button>
+                <span id="acal-month-label" class="cal-month-label">—</span>
+                <button class="cal-nav-btn" onclick="acalNext()"><i class='bx bx-chevron-right'></i></button>
+              </div>
+              <div class="cal-grid" id="acal-grid"></div>
+              <div class="cal-legend">
+                <span class="cal-dot" style="background:var(--gold)"></span><span>Booked</span>
+                <span class="cal-dot" style="background:#00c9a7"></span><span>Check-In</span>
+                <span class="cal-dot" style="background:#fd9644"></span><span>Check-Out</span>
+                <span class="cal-dot" style="background:#a855f7"></span><span>Today</span>
+              </div>
+              <div id="acal-events-list" style="margin-top:.8rem"></div>
+            </div>
+            <div class="side-cards">
+              <div class="card">
+                <div class="card-header" style="margin-bottom:.8rem">
+                  <h2 class="card-title"><i class='bx bx-list-ul'
+                      style='color:var(--gold);margin-right:.4rem'></i>Recent Bookings</h2>
+                  <button class="btn-ghost" onclick="ashowPage('allbookings')">View All →</button>
+                </div>
+                <div id="adash-recent-bookings"></div>
+              </div>
+              <div class="card">
+                <h2 class="card-title" style="margin-bottom:1rem">Room Status</h2>
+                <div id="aroom-status-list"></div>
+              </div>
+              <div class="card">
+                <h2 class="card-title" style="margin-bottom:1rem"><i class='bx bx-line-chart' style='color:var(--gold);margin-right:.4rem'></i>Revenue Breakdown</h2>
+                <div id="arevenue-breakdown-list"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ALL BOOKINGS -->
+        <div id="apage-allbookings" class="page">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">All Bookings</h1>
+              <p class="page-sub">View, update, and manage all hotel reservations</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header" style="margin-bottom:1rem">
+              <select id="aab-filter" onchange="arenderAllBookings()" class="form-control" style="width:auto">
+                <option value="All">All Bookings</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Pending">Pending</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+            <div style="overflow-x:auto">
+              <table class="bookings-table">
+                <thead>
+                  <tr>
+                    <th>Ref</th>
+                    <th>Guest</th>
+                    <th>Room</th>
+                    <th>Check-In</th>
+                    <th>Check-Out</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="aall-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- MANAGE ROOMS -->
+        <div id="apage-rooms" class="page">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Manage Rooms</h1>
+              <p class="page-sub">Add, edit, and configure hotel rooms</p>
+            </div>
+            <button class="btn-primary" onclick="aopenAddRoomModal()"><i class='bx bx-plus'></i> Add Room</button>
+          </div>
+          <div class="card">
+            <div id="arooms-table-wrap" style="overflow-x:auto">
+              <table class="bookings-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Floor</th>
+                    <th>Cap</th>
+                    <th>Rate/Night</th>
+                    <th>Status</th>
+                    <th>Rating</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="arooms-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div id="apage-settings" class="page">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Admin Settings</h1>
+              <p class="page-sub">Manage your admin profile and password</p>
+            </div>
+          </div>
+          <div class="settings-grid">
+            <div class="card">
+              <div class="section-label">PROFILE</div>
+              <h2 class="card-title" style="margin-bottom:1.2rem">Edit Profile</h2>
+              <div class="form-row">
+                <div class="form-group"><label>First Name</label><input type="text" id="aset-fname" /></div>
+                <div class="form-group"><label>Last Name</label><input type="text" id="aset-lname" /></div>
+              </div>
+              <div class="form-group"><label>Email</label><input type="email" id="aset-email" /></div>
+              <div class="form-group"><label>Phone</label><input type="tel" id="aset-phone" /></div>
+              <button class="btn-primary" onclick="asaveProfile()"><i class='bx bx-save'></i> Save Profile</button>
+            </div>
+            <div class="card">
+              <div class="section-label">SECURITY</div>
+              <h2 class="card-title" style="margin-bottom:1.2rem">Change Password</h2>
+              <div class="form-group"><label>Current Password</label><input type="password" id="aset-oldpw" /></div>
+              <div class="form-group"><label>New Password</label><input type="password" id="aset-newpw" /></div>
+              <div class="form-group"><label>Confirm New Password</label><input type="password" id="aset-cpw" /></div>
+              <button class="btn-primary" onclick="achangePassword()"><i class='bx bx-lock-alt'></i> Change
+                Password</button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- MANAGE ROOM MODAL -->
+  <div id="amanage-room-modal" class="modal-overlay" onclick="acloseManageRoomModal(event)"
+    style="display:none;z-index:3000">
+    <div class="modal-box" style="max-width:560px;max-height:90vh;overflow-y:auto">
+      <button class="modal-close" onclick="acloseManageRoomModal()"><i class='bx bx-x'></i></button>
+      <div style="padding:1.5rem 0 0">
+        <div class="section-label" id="amr-mode-label">MANAGE ROOM</div>
+        <h2 class="card-title" id="amanage-room-title" style="margin-bottom:1.5rem">Edit Room Details</h2>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;justify-content:space-between">
+            <span>Room Photos</span>
+            <label for="amr-photo-upload" class="btn-ghost" style="cursor:pointer;font-size:.8rem;color:var(--gold)"><i
+                class='bx bx-image-add'></i> Add Photo</label>
+          </label>
+          <input type="file" id="amr-photo-upload" accept="image/*" multiple style="display:none"
+            onchange="amrHandleUpload(this)" />
+          <div id="amr-photo-preview" class="mr-photo-grid"></div>
+        </div>
+        <div class="form-group"><label>Room ID / Number</label><input type="text" id="amr-id" placeholder="e.g. 401" />
+        </div>
+        <div class="form-group"><label>Room Name</label><input type="text" id="amr-name"
+            placeholder="e.g. The Ocean Suite" /></div>
+        <div class="form-row">
+          <div class="form-group"><label>Room Type</label>
+            <select id="amr-type">
+              <option value="Standard">Standard</option>
+              <option value="Deluxe">Deluxe</option>
+              <option value="Suite">Suite</option>
+              <option value="Family">Family</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Floor</label><input type="text" id="amr-floor" placeholder="e.g. Floor 4" />
+          </div>
+        </div>
+        <div class="form-group" id="amr-status-wrap" style="display:none">
+          <label>Room Status <span style="color:var(--text-muted);font-size:.78rem">(auto-managed)</span></label>
+          <select id="amr-status">
+            <option value="Available">Available</option>
+            <option value="Occupied">Occupied</option>
+            <option value="Maintenance">Maintenance — Set manually</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Rate per Night (₱)</label><input type="number" id="amr-rate"
+              placeholder="e.g. 2500" min="0" /></div>
+          <div class="form-group"><label>Capacity (guests)</label><input type="number" id="amr-cap" placeholder="e.g. 2"
+              min="1" max="10" /></div>
+        </div>
+        <div class="form-group"><label>Description</label><textarea id="amr-desc" rows="3"
+            placeholder="Room description..."></textarea></div>
+        <div class="form-group"><label>Amenities <span
+              style="color:var(--text-muted);font-size:.78rem">(comma-separated)</span></label><input type="text"
+            id="amr-amenities" placeholder="WiFi, TV, AC, Mini-bar" /></div>
+        <div class="form-group">
+          <label>What's Inside This Room <span style="color:var(--text-muted);font-size:.78rem">(one item per
+              line)</span></label>
+          <textarea id="amr-inside" rows="4"
+            placeholder="Queen Bed&#10;42&quot; Smart TV&#10;Rain Shower&#10;Coffee Maker"></textarea>
+        </div>
+        <div class="form-actions" style="margin-top:1.2rem">
+          <button class="btn-outline" onclick="acloseManageRoomModal()">Cancel</button>
+          <button class="btn-primary" onclick="asaveRoomChanges()"><i class='bx bx-save'></i> Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="admin-toast" class="toast"></div>
+  <script src="admin.js"></script>
+</body>
+
+</html>
